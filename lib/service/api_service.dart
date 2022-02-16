@@ -1,6 +1,7 @@
 
 
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:pubsnotfound/model/articles.dart';
@@ -14,6 +15,7 @@ class ApiService {
     final response = await client.get(Uri.parse(endPoint));
     Map<String, dynamic> json = jsonDecode(response.body);
     List<dynamic> body = json['articles'];
+ //   log(body.toString());
     List<Article> articles =
     body.map((dynamic item) => Article.fromJson(item)).toList();
     if (query != null) {
@@ -39,7 +41,7 @@ class ApiService {
     //  log(response.body.toString());
     Map<String, dynamic> json = jsonDecode(response.body);
     List<dynamic> body = json['sources'];
-    //  log(body.toString());
+
     List<Source> source =
     body.map((dynamic item) => Source.fromJson(item)).toList();
     // log(articles.length.toString());
@@ -64,6 +66,7 @@ class ApiService {
     final response = await client.get(Uri.parse(endPoint));
     Map<String, dynamic> json = jsonDecode(response.body);
     List<dynamic> body = json['articles'];
+  //  log(body.toString());
     List<Article> articles =
     body.map((dynamic item) => Article.fromJson(item)).toList();
     if (articles != null) {

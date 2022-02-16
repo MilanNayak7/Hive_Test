@@ -11,21 +11,17 @@ import 'Component/sourceTab.dart';
 import 'model/articles.dart';
 
 late Box box;
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Directory directory = await path_provider.getApplicationDocumentsDirectory();
   Hive.init(directory.path);
- // await Hive.initFlutter();
+  // await Hive.initFlutter();
   Hive.registerAdapter(SourceAdapter());
   Hive.registerAdapter(ArticleAdapter());
-  await Hive.openBox('articles');
-
+  //await Hive.openBox<Article>('articles');
 
   runApp(const MyApp());
-
-
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -91,13 +87,12 @@ class ListWidget extends StatefulWidget {
 }
 
 class _ListWidgetState extends State<ListWidget> {
-
   @override
   void initState() {
     super.initState();
     getArticles();
-
   }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -118,49 +113,39 @@ class _ListWidgetState extends State<ListWidget> {
     );
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return FutureBuilder(
-  //     future: getArticles(),
-  //     builder: (BuildContext context, AsyncSnapshot<List<Article>> snapshot) {
-  //       //   log(snapshot.data.toString());
-  //       if (snapshot.hasData) {
-  //         List<Article>? articles = snapshot.data;
-  //         return ListView.builder(
-  //             itemCount: articles?.length,
-  //             itemBuilder: (context, index) =>
-  //                 customListTile(articles![index], context));
-  //       }
-  //       return const Center(
-  //         child: CircularProgressIndicator(),
-  //       );
-  //     },
-  //   );
-  // }
+  /*
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: getArticles(),
+      builder: (BuildContext context, AsyncSnapshot<List<Article>> snapshot) {
+        //   log(snapshot.data.toString());
+        if (snapshot.hasData) {
+          List<Article>? articles = snapshot.data;
+          return ListView.builder(
+              itemCount: articles?.length,
+              itemBuilder: (context, index) =>
+                  customListTile(articles![index], context));
+        }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+*/
 
   Future<List<Article>> getArticles() async {
-    final posts = Hive.box('articles').get("posts",defaultValue: []);
-   // log(posts.toString());
-    if(posts.isNotEmpty) {
-      return posts;
-    } else{
-      final a = await widget.client.getStoreArticle();
-      Hive.box('articles').put("posts", a);
-      return a ;
+   final box  =  await Hive.openBox<Article>('articles');
+     final posts = box.values.toList();
+     log(posts.toString());
+     if(posts.isNotEmpty) {
+       return posts;
+     } else{
+    final a = await widget.client.getStoreArticle();
+    box.addAll(a);
+    return a;
     }
-
-     //    box.addAll(a);
-     // var length = a.length;
-     //   Hive.box('note').addAll(a);
-     //  var data = Hive.box('note');
-     //  var data1 = data.get('note');
-     //  log(data1.toString());
-     //  return data1;
-
-    // for( var i in a ){
-    //   box.add(i);
-    // }
-
   }
 }
 

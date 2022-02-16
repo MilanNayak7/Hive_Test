@@ -1,6 +1,4 @@
 
-
-
 import 'package:flutter/material.dart';
 import 'package:pubsnotfound/model/articles.dart';
 import 'package:pubsnotfound/pages/articles_details_page.dart';
